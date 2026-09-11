@@ -1,1 +1,1345 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Module 1 — Lecture Hub</title><link rel="stylesheet" href="styles.css"></head><body data-category="MODULE 1"><nav class="nav"><a class="brand" href="index.html">LECTURE <i>HUB</i></a><button class="menu">☰</button><div class="nav-links"><a href="index.html">HOME</a><a class="active" href="module-1.html">MODULE 1</a><a href="module-2.html">MODULE 2</a><a href="module-3.html">MODULE 3</a><a href="workshops.html">WORKSHOPS</a><a href="optional-classes.html">OPTIONAL</a><a href="notes.html">NOTES</a><a href="contact.html">CONTACT</a><a href="admin.html">ADMIN</a></div></nav><main><header class="page-hero"><span class="eyebrow">LECTURE ARCHIVE / 01</span><h1>MODULE 1</h1><p class="lede">Explore every session in this learning module.</p></header><section class="catalog-controls"><input id="search" placeholder="Search lectures, instructors, dates…"><select id="status"><option>ALL</option><option>LIVE</option><option>UPCOMING</option><option>NEW</option><option>ARCHIVED</option></select><select id="sort"><option>Newest</option><option>Oldest</option><option>Lecture Name</option><option>Instructor</option></select><span id="found" class="found">Loading lectures</span></section><section class="section"><div id="lecture-grid" class="lecture-grid"></div></section></main><script src="api.js"></script><script src="auth.js"></script><script src="animations.js"></script><script src="app.js"></script><script>document.querySelector('.menu').onclick=()=>document.querySelector('.nav').classList.toggle('open')</script></body></html>
+<!DOCTYPE html>
+<html lang="en" class="dark">
+  <!-- <html lang="en" class="dark"> — uncomment for dark-by-default (replace the tag above; `dark` is a Tailwind variant, never `@apply` it) -->
+  <head>
+    <script type="module">
+      import { injectIntoGlobalHook } from &#34;/@react-refresh&#34;;
+injectIntoGlobalHook(window);
+window.$RefreshReg$ = () =&gt; {};
+window.$RefreshSig$ = () =&gt; (type) =&gt; type;
+    </script>
+    <script type="module" src="/@vite/client">
+    </script>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" href="/favicon.ico" sizes="any" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="A focused learning library for every lecture and resource." />
+    <title>
+      Lecture Hub — Private Portal
+    </title>
+    <script>
+      if(window.self!==window.top){
+  var s=document.createElement(&#34;script&#34;);s.src=&#34;/visual-edit-overlay.js&#34;;document.head.appendChild(s);
+  window.tailwind=window.tailwind||{};tailwind.config={corePlugins:{preflight:false}};var t=document.createElement(&#34;script&#34;);t.src=&#34;https://cdn.tailwindcss.com&#34;;document.head.appendChild(t);
+}
+    </script>
+    <script data-emergent-overlay="">
+      /* Emergent preview error overlay. Injected inline by plugins/emergent-overlay.
+   Classic script on purpose: it must run even when the whole module graph fails. */
+(function () {
+  &#34;use strict&#34;;
+  if (window.__EMERGENT_OVERLAY__) return;
+  window.__EMERGENT_OVERLAY__ = true;
+  window.__EMERGENT_OVERLAY_STATE__ = {
+    visible: false,
+    errors: [],
+    get splash() {
+      return !!document.querySelector(&#34;[data-emergent-splash]&#34;);
+    },
+  };
+
+  var BASE = &#34;/&#34;;
+  var HMR_ENABLED = true;
+  var ROOT = &#34;/app/frontend&#34;;
+  var RRWEB_MODE = &#34;buffer&#34;;
+  // &#34;hot&#34; = vite custom-event channel; &#34;http&#34; = token-authenticated POSTs (craco/webpack).
+  var TRANSPORT = &#34;hot&#34;;
+  var TOKEN = &#34;&#34;;
+  // The bug FAB is a product surface with its own knob — recording and reporting
+  // work headlessly without it.
+  var FAB_MODE = &#34;off&#34;;
+  var MAX_ERRORS = 20;
+
+  var KINDS = {
+    compile: { badge: &#34;Build error&#34;, tone: &#34;warn&#34;, headline: &#34;The latest code change didn&#39;t compile&#34; },
+    runtime: { badge: &#34;Runtime error&#34;, tone: &#34;err&#34;, headline: &#34;The app hit an error while running&#34; },
+    rejection: { badge: &#34;Unhandled rejection&#34;, tone: &#34;err&#34;, headline: &#34;A background operation failed&#34; },
+    resource: { badge: &#34;Load failure&#34;, tone: &#34;neutral&#34;, headline: &#34;Part of the app failed to load&#34; },
+  };
+
+  // If overlay code itself ever throws, disable the overlay permanently rather than
+  // risk an error-event feedback loop or any interference with the host app.
+  var defused = false;
+  function safely(fn) {
+    return function () {
+      if (defused) return;
+      try {
+        return fn.apply(this, arguments);
+      } catch (e) {
+        defused = true;
+        try {
+          console.warn(&#34;[emergent-overlay] disabled after internal error:&#34;, e);
+        } catch (e2) {
+          /* stay silent */
+        }
+      }
+    };
+  }
+
+  // Not the app&#39;s fault: our own capture layer, browser extensions, opaque cross-origin scripts.
+  var FOREIGN_RE = /\/__emergent_overlay__\/|\/_emergent\/|(?:chrome|moz|safari-web|safari)-extension:\/\//;
+  function isForeign(file, stack) {
+    if (FOREIGN_RE.test(String(file || &#34;&#34;))) return true;
+    var lines = String(stack || &#34;&#34;).split(&#34;\n&#34;);
+    for (var i = 0; i &lt; lines.length; i++) {
+      if (/:\d+:\d+/.test(lines[i])) return FOREIGN_RE.test(lines[i]); // first real frame decides
+    }
+    return false;
+  }
+  function isCrossOrigin(url) {
+    try {
+      return new URL(url, location.href).origin !== location.origin;
+    } catch (e) {
+      return false; // unparsable → keep treating it as the app&#39;s
+    }
+  }
+  // Browser/OS-injected noise, never the app&#39;s own code: Safari &amp; iOS password
+  // autofill (_AutofillCallbackHandler, thrown against index.html), a clipboard
+  // write/read blocked for want of a user gesture (fires in headless/automation
+  // and on locked-down browsers), Chromium&#39;s internal &#34;report this bug&#34; string, and
+  // the ResizeObserver &#34;loop completed / limit exceeded&#34; notice (the browser defers
+  // those notifications to the next frame; nothing is lost). None is an app render
+  // bug, so none should card the app or 503 /health.
+  var BROWSER_NOISE_RE = /_AutofillCallbackHandler|report this bug to chromium|clipboard[\s\S]{0,60}(?:permission denied|not\s*allowed)|ResizeObserver loop/i;
+  function isBrowserNoise(message) {
+    return BROWSER_NOISE_RE.test(String(message || &#34;&#34;));
+  }
+  function ignored(what, detail) {
+    try {
+      console.debug(&#34;[emergent-overlay] ignored non-app error (&#34; + what + &#34;):&#34;, detail);
+    } catch (e) {
+      /* stay silent */
+    }
+  }
+
+  var errors = [];
+  var current = 0;
+  var dismissed = false;
+  var ui = null;
+
+  function stripAnsi(s) {
+    return s ? String(s).replace(/\u001b\[[0-9;]*m/g, &#34;&#34;) : &#34;&#34;;
+  }
+
+  function shortFile(f) {
+    if (!f) return &#34;&#34;;
+    f = String(f).split(&#34;?&#34;)[0];
+    if (ROOT &amp;&amp; f.indexOf(ROOT) === 0) f = f.slice(ROOT.length).replace(/^\//, &#34;&#34;);
+    f = f.replace(location.origin, &#34;&#34;).replace(/^\//, &#34;&#34;);
+    // inline &lt;script&gt; errors report the page URL as filename; name the served document
+    // (line numbers refer to the served HTML, which includes injected scripts)
+    if (f === &#34;&#34;) return &#34;index.html&#34;;
+    return f;
+  }
+
+  function describe(v) {
+    if (v instanceof Error) return v.message;
+    if (typeof v === &#34;string&#34;) return v;
+    try {
+      return JSON.stringify(v).slice(0, 500);
+    } catch (e) {
+      return String(v);
+    }
+  }
+
+  // Beacon current error state to the plugin so /__emergent_overlay__/health
+  // (the probe API) can see runtime errors; heartbeat keeps it fresh, silence expires it.
+  // stock-splash detection: the template Home.tsx carries data-emergent-splash on its root
+  function splashVisible() {
+    try {
+      return !!document.querySelector(&#34;[data-emergent-splash]&#34;);
+    } catch (e) {
+      return false;
+    }
+  }
+
+  var heartbeat = null;
+  var seqCounter = 0;
+  // Reports + resolution ride Vite&#39;s token-authenticated hot channel (no open HTTP
+  // write endpoints). Queued until the hot context connects; flushed on ready.
+  var hotRef = null;
+  var hotQueue = [];
+  // With hot transport but HMR disabled the channel can never open: senders are dropped
+  // instead of queued forever (each dump closure retains a full buffer copy).
+  var hotDead = TRANSPORT === &#34;hot&#34; &amp;&amp; !HMR_ENABLED;
+  function whenHot(fn) {
+    if (hotRef) fn(hotRef);
+    else if (!hotDead) {
+      if (hotQueue.length &gt;= 50) hotQueue.shift(); // bound retained closures while connecting
+      hotQueue.push(fn);
+    }
+  }
+  function hotReady(hot) {
+    hotRef = hot;
+    var q = hotQueue.splice(0);
+    for (var i = 0; i &lt; q.length; i++) {
+      try {
+        q[i](hot);
+      } catch (e) {
+        /* queued sender failed — drop it */
+      }
+    }
+  }
+  // stable per-tab across reloads, so a recovered tab&#39;s empty beacon clears its own slot
+  var PAGE_ID = (function () {
+    try {
+      var key = &#34;__emergent_overlay_page_id__&#34;;
+      var id = sessionStorage.getItem(key) || Math.random().toString(36).slice(2, 10);
+      // claim the id: a duplicated tab copies sessionStorage, so leave it absent while
+      // this document is alive and restore it on pagehide for same-tab reloads
+      sessionStorage.removeItem(key);
+      window.addEventListener(&#34;pagehide&#34;, function () {
+        try {
+          sessionStorage.setItem(key, id);
+        } catch (e) {
+          /* storage gone — next load mints a fresh id; TTL reaps the old slot */
+        }
+      });
+      return id;
+    } catch (e) {
+      return Math.random().toString(36).slice(2, 10);
+    }
+  })();
+  function sendReport() {
+    var splash = splashVisible();
+    var payload = {
+      page: PAGE_ID,
+      seq: Date.now() * 1000 + (seqCounter = (seqCounter + 1) % 1000),
+      url: location.pathname,
+      splash: splash,
+      errors: errors.map(function (e) {
+        return { kind: e.kind, message: String(e.message).slice(0, 500), file: e.file, count: e.count, replay: e.replayFile || null };
+      }),
+    };
+    whenHot(function (hot) {
+      try {
+        hot.send(&#34;emergent-overlay:report&#34;, payload);
+      } catch (e) {
+        /* report is best-effort */
+      }
+    });
+    // heartbeat while there is anything the probe needs to see stay fresh
+    var active = errors.length &gt; 0 || splash;
+    if (active &amp;&amp; !heartbeat) heartbeat = setInterval(sendReport, 15000);
+    if (!active &amp;&amp; heartbeat) {
+      clearInterval(heartbeat);
+      heartbeat = null;
+    }
+  }
+
+  // splash renders after React mounts (post boot-beacon) and can appear/vanish on SPA
+  // navigations — re-report on load, history changes, and shortly after boot.
+  window.addEventListener(&#34;load&#34;, sendReport);
+  window.addEventListener(&#34;popstate&#34;, function () {
+    setTimeout(sendReport, 800);
+  });
+  var origPushState = history.pushState;
+  history.pushState = function () {
+    var r = origPushState.apply(this, arguments);
+    setTimeout(sendReport, 800);
+    return r;
+  };
+  setTimeout(sendReport, 1500);
+
+  // JS templates report via the CDN ln.js &#34;preview-logger&#34; protocol; emit the same shape
+  // so the E1ectron preview panel handles farm-ts errors through its existing pipeline.
+  var LN_TYPES = {
+    compile: { type: &#34;buildError&#34;, category: &#34;build&#34; },
+    runtime: { type: &#34;runtimeError&#34;, category: &#34;runtime&#34; },
+    rejection: { type: &#34;promiseRejection&#34;, category: &#34;runtime&#34; },
+    resource: { type: &#34;resourceError&#34;, category: &#34;resource&#34; },
+  };
+  function notifyParent(err) {
+    try {
+      if (window.parent &amp;&amp; window.parent !== window) {
+        window.parent.postMessage(
+          { type: &#34;emergent:preview-error&#34;, kind: err.kind, message: err.message, file: err.file },
+          &#34;*&#34;
+        );
+        var ln = LN_TYPES[err.kind] || LN_TYPES.runtime;
+        window.parent.postMessage(
+          {
+            source: &#34;preview-logger&#34;,
+            // provenance: lets the preview panel scope UI (fix-it chip) to overlay-equipped
+            // pods, distinct from the CDN emergent-main.js stream in JS templates
+            via: &#34;emergent-overlay&#34;,
+            template: &#34;farm-ts&#34;,
+            type: ln.type,
+            category: ln.category,
+            severity: &#34;error&#34;,
+            data: { message: err.message, stack: err.stack, filename: err.file, frame: err.frame },
+            timestamp: new Date().toISOString(),
+          },
+          &#34;*&#34;
+        );
+      }
+    } catch (e) {
+      /* cross-origin parent — ignore */
+    }
+  }
+
+  function addError(e) {
+    e.count = 1;
+    for (var i = 0; i &lt; errors.length; i++) {
+      var x = errors[i];
+      if (x.kind === e.kind &amp;&amp; x.message === e.message &amp;&amp; x.file === e.file) {
+        x.count++;
+        if (e.stack) x.stack = e.stack;
+        sendReport();
+        render();
+        return;
+      }
+    }
+    if (e.kind === &#34;compile&#34;) {
+      // one live build error per file: the server&#39;s latest wins
+      errors = errors.filter(function (x) {
+        return x.kind !== &#34;compile&#34; || x.file !== e.file;
+      });
+    }
+    errors.push(e);
+    if (errors.length &gt; MAX_ERRORS) errors.shift();
+    current = errors.length - 1;
+    if (e.kind === &#34;resource&#34;) {
+      // a build error explains the load failure — keep focus on it
+      for (var j = 0; j &lt; errors.length; j++) if (errors[j].kind === &#34;compile&#34;) current = j;
+    }
+    dismissed = false;
+    if ((e.kind === &#34;runtime&#34; || e.kind === &#34;rejection&#34;) &amp;&amp; Date.now() - lastDumpAt &gt; 30000) {
+      lastDumpAt = Date.now();
+      // Fires in every mode (without the recorder it is a stack-only crash report), and
+      // waits out sourcemap resolution (2s timeout) so it carries resolved coordinates.
+      setTimeout(safely(function () {
+        dumpReplay(
+          &#34;crash&#34;,
+          &#34;&#34;,
+          {
+            kind: e.kind,
+            message: String(e.message).slice(0, 300),
+            file: e.file,
+            stack: e.stack ? String(e.stack).slice(0, 4000) : null,
+            frame: e.frame || null,
+          },
+          function (file) {
+            if (file) {
+              e.replayFile = file;
+              sendReport();
+            }
+          }
+        );
+      }), 2500);
+    }
+    if ((e.kind === &#34;runtime&#34; || e.kind === &#34;rejection&#34;) &amp;&amp; e.stack) {
+      // parent gets ONE message with the best coordinates available: wait for sourcemap
+      // resolution (bounded), then notify
+      var notified = false;
+      var notifyOnce = function () {
+        if (!notified) {
+          notified = true;
+          notifyParent(e);
+        }
+      };
+      setTimeout(notifyOnce, 1500);
+      resolveRuntimeError(e, notifyOnce);
+    } else {
+      notifyParent(e);
+    }
+    sendReport();
+    render();
+  }
+
+  // Server rewrites the stack to original source positions (sourcemaps live in Vite&#39;s
+  // module graph) and replies over the hot channel — browser stacks point at
+  // transformed modules.
+  var resolveIdSeq = 0;
+  var pendingResolves = {};
+  function resolveRuntimeError(e, onSettled) {
+    if (e.resolvedRequested || !e.stack) {
+      if (onSettled) onSettled();
+      return;
+    }
+    e.resolvedRequested = true;
+    var id = &#34;r&#34; + ++resolveIdSeq;
+    var done = false;
+    pendingResolves[id] = function (d) {
+      if (done) return;
+      done = true;
+      delete pendingResolves[id];
+      if (d.stack) e.stack = d.stack;
+      if (d.file) e.file = d.file;
+      if (d.frame &amp;&amp; !e.frame) e.frame = d.frame;
+      sendReport();
+      render();
+      if (onSettled) onSettled();
+    };
+    setTimeout(function () {
+      if (!done) {
+        done = true;
+        delete pendingResolves[id];
+        if (onSettled) onSettled();
+      }
+    }, 2000);
+    whenHot(function (hot) {
+      try {
+        hot.send(&#34;emergent-overlay:resolve&#34;, { id: id, stack: e.stack });
+      } catch (err2) {
+        /* resolution is best-effort */
+      }
+    });
+  }
+
+  function clearCompileErrors(shouldClear) {
+    errors = errors.filter(function (x) {
+      if (x.kind !== &#34;compile&#34;) return true;
+      return shouldClear ? !shouldClear(x) : false;
+    });
+    if (current &gt;= errors.length) current = Math.max(0, errors.length - 1);
+    sendReport();
+    render();
+  }
+
+  // ---- black box (RRWEB_MODE === &#34;buffer&#34;): rolling rrweb ring buffer in memory.
+  // Nothing leaves the page until an error fires or the user clicks the bug button;
+  // dumps go over the hot channel to .emergent/recordings/ in the workspace.
+  var IS_EMBEDDED = (function () {
+    try {
+      return window.parent &amp;&amp; window.parent !== window;
+    } catch (e) {
+      return true;
+    }
+  })();
+  // Ring of finished checkout windows (oldest first) + the live one. Users fiddle for
+  // minutes before filing a report, so 2 windows (30-60s) lost the repro; keep ~5.
+  var RETAIN_WINDOWS = 5; // incl. the live window ≈ 2-2.5 min at 30s checkouts
+  var RETAIN_BYTES = 4 * 1024 * 1024; // circuit breaker for mutation-storm apps; server cap is 8MB
+  var bufWindows = [];
+  var bufCur = [];
+  var bufCurBytes = 0;
+  var lastForcedCheckout = 0;
+  var lastDumpAt = 0;
+  var replaySeq = 0;
+  var pendingReplays = {};
+
+  function startBlackBox() {
+    if (RRWEB_MODE !== &#34;buffer&#34; || hotDead) return; // no channel to flush to: no recorder, no button
+    var tries = 0;
+    var timer = setInterval(function () {
+      if (window.rrweb &amp;&amp; window.rrweb.record) {
+        clearInterval(timer);
+        try {
+          window.rrweb.record({
+            emit: safely(function (event, isCheckout) {
+              if (isCheckout) {
+                bufWindows.push({ events: bufCur, bytes: bufCurBytes });
+                bufCur = [];
+                bufCurBytes = 0;
+                // Evict whole windows only — each starts with its own FullSnapshot, so
+                // any retained suffix stays a self-contained, replayable stream.
+                while (bufWindows.length &gt; RETAIN_WINDOWS - 1) bufWindows.shift();
+                var total = bufCurBytes;
+                for (var i = 0; i &lt; bufWindows.length; i++) total += bufWindows[i].bytes;
+                while (total &gt; RETAIN_BYTES &amp;&amp; bufWindows.length) {
+                  total -= bufWindows[0].bytes;
+                  bufWindows.shift();
+                }
+              }
+              var size;
+              try {
+                size = JSON.stringify(event).length;
+              } catch (e) {
+                size = 1024;
+              }
+              bufCur.push(event);
+              bufCurBytes += size;
+              if (bufCur.length &gt; 1500) {
+                var drop = bufCur.length - 1500;
+                // proportional estimate: per-event sizes aren&#39;t stored
+                bufCurBytes = Math.max(0, Math.round(bufCurBytes * (1 - drop / bufCur.length)));
+                bufCur.splice(0, drop);
+              }
+              // Byte-bound the LIVE window too: force a checkout at half the cap so
+              // mutation-heavy apps rotate instead of growing one unbounded window.
+              // Rate-limited: each forced checkout costs a full snapshot.
+              if (bufCurBytes &gt; RETAIN_BYTES / 2 &amp;&amp; Date.now() - lastForcedCheckout &gt; 5000) {
+                lastForcedCheckout = Date.now();
+                try {
+                  window.rrweb.record.takeFullSnapshot(true);
+                } catch (e2) {
+                  /* rotation is best-effort */
+                }
+              }
+              // Last resort (e.g. one event bigger than the cap): drop history, keep going.
+              if (bufCurBytes &gt; RETAIN_BYTES) bufWindows = [];
+            }),
+            checkoutEveryNms: 30000,
+            maskAllInputs: true,
+          });
+          // FAB only once the recorder is live: a bug button that cannot capture the session is a half-promise
+          renderBugFab();
+        } catch (e) {
+          /* recorder must never break the app */
+        }
+      } else if (++tries &gt; 40) {
+        clearInterval(timer);
+        try {
+          console.info(&#34;[emergent-overlay] session recorder did not load (content blocker?) — crash reports will be stack-only&#34;);
+        } catch (e) {
+          /* console may be missing */
+        }
+      }
+    }, 250);
+  }
+
+  // kind: &#34;crash&#34; | &#34;user-report&#34;. onDone(fileOrNull).
+  function dumpReplay(kind, note, errorSummary, onDone) {
+    if (hotDead) {
+      if (onDone) onDone(null);
+      return;
+    }
+    var events = [];
+    for (var i = 0; i &lt; bufWindows.length; i++) events = events.concat(bufWindows[i].events);
+    events = events.concat(bufCur);
+    var id = &#34;d&#34; + ++replaySeq;
+    var done = false;
+    pendingReplays[id] = function (file) {
+      if (done) return;
+      done = true;
+      delete pendingReplays[id];
+      if (onDone) onDone(file);
+    };
+    setTimeout(function () {
+      if (!done) {
+        done = true;
+        delete pendingReplays[id];
+        if (onDone) onDone(null);
+      }
+    }, 4000);
+    whenHot(function (hot) {
+      try {
+        hot.send(&#34;emergent-overlay:crash-replay&#34;, {
+          id: id,
+          kind: kind,
+          note: note || &#34;&#34;,
+          url: location.pathname + location.search,
+          viewport: { w: window.innerWidth, h: window.innerHeight },
+          error: errorSummary || null,
+          recorder: RRWEB_MODE !== &#34;buffer&#34; ? &#34;off&#34; : window.rrweb ? &#34;on&#34; : &#34;blocked&#34;,
+          events: events,
+        });
+      } catch (e) {
+        /* dump is best-effort */
+      }
+    });
+  }
+
+  // ---- bug button: styled as a sibling of the builder&#39;s edit toolbar (visual-edit-v2 tokens).
+  // Embedded it prefills the chat (the user presses send); standalone nothing reaches the agent,
+  // so it saves to the workspace and offers a ready-to-paste note instead.
+  var fabState = null;
+  var BUG_ICON =
+    &#39;&lt;svg width=&#34;15&#34; height=&#34;15&#34; viewBox=&#34;0 0 24 24&#34; fill=&#34;none&#34; stroke=&#34;currentColor&#34; stroke-width=&#34;1.7&#34; stroke-linecap=&#34;round&#34; stroke-linejoin=&#34;round&#34; aria-hidden=&#34;true&#34;&gt;&lt;path d=&#34;M8 2.5l1.8 1.8M16 2.5l-1.8 1.8&#34;/&gt;&lt;path d=&#34;M9 8a3 3 0 0 1 6 0&#34;/&gt;&lt;rect x=&#34;7&#34; y=&#34;8&#34; width=&#34;10&#34; height=&#34;12&#34; rx=&#34;5&#34;/&gt;&lt;path d=&#34;M12 8v12M3 13.5h4M17 13.5h4M4.5 19.5l2.5-1.8M19.5 19.5L17 17.7M4.5 8l2.5 1.8M19.5 8L17 9.8&#34;/&gt;&lt;/svg&gt;&#39;;
+  var CHECK_ICON =
+    &#39;&lt;span class=&#34;dot&#34;&gt;&lt;svg width=&#34;11&#34; height=&#34;11&#34; viewBox=&#34;0 0 24 24&#34; fill=&#34;none&#34; stroke=&#34;#81ff89&#34; stroke-width=&#34;2.4&#34; stroke-linecap=&#34;round&#34; stroke-linejoin=&#34;round&#34; aria-hidden=&#34;true&#34;&gt;&lt;path d=&#34;M5 12.5l4.5 4.5L19 7.5&#34;/&gt;&lt;/svg&gt;&lt;/span&gt;&#39;;
+  var CHEV_UP = &#39;&lt;svg width=&#34;11&#34; height=&#34;6.4&#34; viewBox=&#34;0 0 10 5.83315&#34; fill=&#34;none&#34; aria-hidden=&#34;true&#34;&gt;&lt;path fill-rule=&#34;evenodd&#34; clip-rule=&#34;evenodd&#34; d=&#34;M4.47428 0.186982C4.80159 -0.0799805 5.2841 -0.0611521 5.5892 0.243948L9.75592 4.41067C10.0814 4.73611 10.0814 5.26363 9.75592 5.58907C9.43048 5.91451 8.90296 5.91451 8.57752 5.58907L5 2.01155L1.42248 5.58907C1.09704 5.91451 0.569522 5.91451 0.244081 5.58907C-0.0813603 5.26363 -0.0813603 4.73611 0.244081 4.41067L4.4108 0.243948L4.47428 0.186982Z&#34; fill=&#34;currentColor&#34;/&gt;&lt;/svg&gt;&#39;;
+  var CHEV_DOWN = &#39;&lt;svg width=&#34;11&#34; height=&#34;6.4&#34; viewBox=&#34;0 0 10 5.83315&#34; fill=&#34;none&#34; aria-hidden=&#34;true&#34; style=&#34;transform:rotate(180deg)&#34;&gt;&lt;path fill-rule=&#34;evenodd&#34; clip-rule=&#34;evenodd&#34; d=&#34;M4.47428 0.186982C4.80159 -0.0799805 5.2841 -0.0611521 5.5892 0.243948L9.75592 4.41067C10.0814 4.73611 10.0814 5.26363 9.75592 5.58907C9.43048 5.91451 8.90296 5.91451 8.57752 5.58907L5 2.01155L1.42248 5.58907C1.09704 5.91451 0.569522 5.91451 0.244081 5.58907C-0.0813603 5.26363 -0.0813603 4.73611 0.244081 4.41067L4.4108 0.243948L4.47428 0.186982Z&#34; fill=&#34;currentColor&#34;/&gt;&lt;/svg&gt;&#39;;
+  var COPY_ICON =
+    &#39;&lt;svg width=&#34;13&#34; height=&#34;13&#34; viewBox=&#34;0 0 24 24&#34; fill=&#34;none&#34; stroke=&#34;currentColor&#34; stroke-width=&#34;1.8&#34; stroke-linecap=&#34;round&#34; stroke-linejoin=&#34;round&#34; aria-hidden=&#34;true&#34;&gt;&lt;rect x=&#34;9&#34; y=&#34;9&#34; width=&#34;11&#34; height=&#34;11&#34; rx=&#34;2&#34;/&gt;&lt;path d=&#34;M5 15V6a2 2 0 0 1 2-2h9&#34;/&gt;&lt;/svg&gt;&#39;;
+
+  function fallbackCopy(text) {
+    try {
+      var ta = document.createElement(&#34;textarea&#34;);
+      ta.value = text;
+      ta.setAttribute(&#34;readonly&#34;, &#34;&#34;);
+      ta.style.cssText = &#34;position:fixed;top:0;left:0;opacity:0&#34;;
+      document.body.appendChild(ta);
+      ta.select();
+      var ok = document.execCommand(&#34;copy&#34;);
+      ta.remove();
+      return !!ok;
+    } catch (e) {
+      return false;
+    }
+  }
+  function copyText(text, done) {
+    try {
+      if (navigator.clipboard &amp;&amp; navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(
+          function () {
+            done(true);
+          },
+          function () {
+            done(fallbackCopy(text));
+          }
+        );
+        return;
+      }
+    } catch (e) {
+      /* fall through */
+    }
+    done(fallbackCopy(text));
+  }
+
+  function renderBugFab() {
+    if (FAB_MODE !== &#34;on&#34; || fabState) return;
+    var tucked = false;
+    try {
+      tucked = !!sessionStorage.getItem(&#34;__emergent_bug_fab_dismissed__&#34;);
+    } catch (e) {
+      /* ignore */
+    }
+    var host = document.createElement(&#34;div&#34;);
+    host.setAttribute(&#34;data-emergent-bug-fab&#34;, &#34;&#34;);
+    var sh = host.attachShadow({ mode: &#34;open&#34; });
+    var style = document.createElement(&#34;style&#34;);
+    style.textContent =
+      &#34;:host{all:initial}&#34; +
+      &#34;.bar,.pop{font-family:Inter,ui-sans-serif,system-ui,-apple-system,&#39;Segoe UI&#39;,Roboto,sans-serif;background:rgba(26,26,26,.82);border:1px solid rgba(255,255,255,.12);box-shadow:0 8px 28px rgba(0,0,0,.4);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);box-sizing:border-box}&#34; +
+      &#34;.bar{position:fixed;left:16px;bottom:16px;z-index:2147483646;height:34px;padding:3px;border-radius:42px;display:flex;align-items:center;gap:4px}&#34; +
+      &#34;.fab,.mini,.hide{display:flex;align-items:center;justify-content:center;height:28px;border-radius:10px;border:none;background:transparent;color:#9aa0a6;cursor:pointer;padding:0;margin:0;font:inherit}&#34; +
+      &#34;.fab{width:28px}.fab:hover,.fab.open{background:rgba(255,255,255,.1);color:#fff}&#34; +
+      &#34;.bar{transition:transform .28s cubic-bezier(.4,0,.2,1),opacity .2s ease}.bar.tucked{transform:translateY(120%);opacity:0;pointer-events:none}&#34; +
+      &#34;.hide{display:none;width:24px}.bar:hover .hide{display:flex}.bar.busy .hide,.bar.tucked .hide{display:none}.hide:hover{color:#fff}&#34; +
+      &#34;.handle{position:fixed;left:16px;bottom:0;z-index:2147483646;width:34px;height:20px;box-sizing:border-box;border-radius:14px 14px 0 0;border:1px solid rgba(255,255,255,.12);border-bottom:none;background:rgba(26,26,26,.85);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;padding:0 0 2px;margin:0;color:#9aa0a6;cursor:pointer;font:inherit;transform:translateY(120%);opacity:0;pointer-events:none;transition:height .28s cubic-bezier(.4,0,.2,1),transform .28s cubic-bezier(.4,0,.2,1),opacity .2s ease}&#34; +
+      &#34;.handle.on{transform:none;opacity:1;pointer-events:auto}.handle.on:hover{height:28px;color:#fff}&#34; +
+      // toolbar-style tooltips instead of native title boxes
+      &#34;.fab,.hide{position:relative}.fab::after,.hide::after,.handle::after{content:attr(data-tip);position:absolute;bottom:calc(100% + 8px);left:0;display:none;border-radius:6px;background:#060606;color:rgba(255,255,255,.95);font:12px/16px Inter,ui-sans-serif,system-ui,sans-serif;padding:4px 6px;white-space:nowrap;box-shadow:0 4px 12px rgba(0,0,0,.3);pointer-events:none}&#34; +
+      &#34;.fab:hover::after,.hide:hover::after,.handle.on:hover::after{display:block}.fab.open::after,.bar.busy .fab::after{display:none}&#34; +
+      &#34;.lbl{font-size:14px;line-height:20px;font-weight:500;color:#e5e5e7;white-space:nowrap;padding:0 8px 0 2px;cursor:default}.lbl.err{color:#ff5b52}&#34; +
+      &#34;.dot{width:18px;height:18px;border-radius:999px;background:rgba(129,255,137,.16);display:flex;align-items:center;justify-content:center}&#34; +
+      &#34;.mini{gap:6px;padding:0 10px;background:rgba(255,255,255,.1);color:#fff;font-size:13px;line-height:20px;font-weight:500;white-space:nowrap}.mini:hover{background:rgba(255,255,255,.16)}&#34; +
+      &#34;.tip{position:fixed;left:16px;bottom:56px;z-index:2147483646;border-radius:6px;background:#060606;color:rgba(255,255,255,.95);font:12px/16px Inter,ui-sans-serif,system-ui,sans-serif;padding:4px 6px;white-space:nowrap;box-shadow:0 4px 12px rgba(0,0,0,.3)}&#34; +
+      &#34;.pop{position:fixed;left:16px;bottom:58px;z-index:2147483646;width:300px;max-width:calc(100vw - 32px);border-radius:16px;padding:12px;display:flex;flex-direction:column;gap:10px;color:#fff}&#34; +
+      &#34;.t{margin:0;font-size:14px;line-height:20px;font-weight:500;color:rgba(255,255,255,.95)}&#34; +
+      &#34;.h{margin:0;font-size:12px;line-height:16px;color:rgba(255,255,255,.6)}&#34; +
+      &#34;textarea{width:100%;box-sizing:border-box;height:56px;resize:none;outline:none;border-radius:10px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);color:#fff;font:13px/18px Inter,ui-sans-serif,system-ui,sans-serif;padding:8px 10px}&#34; +
+      &#34;textarea::placeholder{color:rgba(255,255,255,.4)}textarea:focus{border-color:rgba(255,255,255,.3)}&#34; +
+      &#34;.row{display:flex;gap:4px;justify-content:flex-end}&#34; +
+      &#34;.b{border-radius:999px;padding:8px 16px;font:500 14px/20px Inter,ui-sans-serif,system-ui,sans-serif;letter-spacing:-.28px;cursor:pointer;white-space:nowrap;border:none;margin:0}&#34; +
+      &#34;.cancel{background:transparent;color:#e5e5e7}.cancel:hover{background:rgba(255,255,255,.1)}&#34; +
+      &#34;.share{background:#0b7cff;color:#fff;font-weight:600;box-shadow:0 .636px .318px rgba(0,0,0,.1),inset 0 -1.75px 0 0 rgba(0,0,0,.2),inset 0 1.75px 8.75px 0 rgba(255,255,255,.4)}.share:hover{background:#2b8cff}.share:disabled{opacity:.6;cursor:default}&#34;;
+    sh.appendChild(style);
+
+    var bar = document.createElement(&#34;div&#34;);
+    bar.className = &#34;bar&#34;;
+    var fab = document.createElement(&#34;button&#34;);
+    fab.className = &#34;fab&#34;;
+    fab.type = &#34;button&#34;;
+    fab.setAttribute(&#34;data-tip&#34;, &#34;Report a bug&#34;);
+    fab.setAttribute(&#34;aria-label&#34;, &#34;Report a bug&#34;);
+    fab.innerHTML = BUG_ICON;
+    bar.appendChild(fab);
+    var hideBtn = document.createElement(&#34;button&#34;);
+    hideBtn.className = &#34;hide&#34;;
+    hideBtn.type = &#34;button&#34;;
+    hideBtn.setAttribute(&#34;data-tip&#34;, &#34;Hide&#34;);
+    hideBtn.setAttribute(&#34;aria-label&#34;, &#34;Hide bug button&#34;);
+    hideBtn.innerHTML = CHEV_DOWN;
+    bar.appendChild(hideBtn);
+    var handle = document.createElement(&#34;button&#34;);
+    handle.className = &#34;handle&#34; + (tucked ? &#34; on&#34; : &#34;&#34;);
+    handle.type = &#34;button&#34;;
+    handle.setAttribute(&#34;data-tip&#34;, &#34;Show bug button&#34;);
+    handle.setAttribute(&#34;aria-label&#34;, &#34;Show bug button&#34;);
+    handle.innerHTML = CHEV_UP;
+    if (tucked) bar.classList.add(&#34;tucked&#34;);
+    sh.appendChild(bar);
+    sh.appendChild(handle);
+
+    var panel = null;
+    var tip = null;
+    var resetTimer = null;
+
+    function el(tag, cls, text) {
+      var n = document.createElement(tag);
+      n.className = cls;
+      if (text) n.textContent = text;
+      return n;
+    }
+    function reset() {
+      if (resetTimer) clearTimeout(resetTimer);
+      resetTimer = null;
+      if (tip) tip.remove();
+      tip = null;
+      var stale = bar.querySelectorAll(&#34;.lbl,.mini&#34;);
+      for (var i = 0; i &lt; stale.length; i++) stale[i].remove();
+      bar.classList.remove(&#34;busy&#34;);
+      fab.innerHTML = BUG_ICON;
+      fab.classList.remove(&#34;open&#34;);
+    }
+    function closePanel() {
+      if (panel) panel.remove();
+      panel = null;
+      fab.classList.remove(&#34;open&#34;);
+    }
+    // The bar itself becomes the confirmation: check + label (+ optional action / tooltip).
+    function status(text, opts) {
+      reset();
+      bar.classList.add(&#34;busy&#34;);
+      fab.innerHTML = opts.err ? BUG_ICON : CHECK_ICON;
+      var lbl = el(&#34;span&#34;, &#34;lbl ok&#34; + (opts.err ? &#34; err&#34; : &#34;&#34;), text);
+      bar.appendChild(lbl);
+      if (opts.action) {
+        var m = el(&#34;button&#34;, &#34;mini&#34;);
+        m.type = &#34;button&#34;;
+        m.innerHTML = COPY_ICON;
+        m.appendChild(el(&#34;span&#34;, &#34;&#34;, opts.action.label));
+        m.addEventListener(
+          &#34;click&#34;,
+          safely(function (ev) {
+            ev.stopPropagation();
+            opts.action.onClick(m.lastChild);
+          })
+        );
+        bar.appendChild(m);
+      }
+      if (opts.tip) {
+        tip = el(&#34;div&#34;, &#34;tip&#34;, opts.tip);
+        sh.appendChild(tip);
+      }
+      if (opts.ms) resetTimer = setTimeout(safely(reset), opts.ms);
+    }
+    function openPanel() {
+      panel = el(&#34;div&#34;, &#34;pop&#34;);
+      panel.appendChild(el(&#34;p&#34;, &#34;t&#34;, IS_EMBEDDED ? &#34;Report this to your agent&#34; : &#34;Save a bug report&#34;));
+      panel.appendChild(
+        el(
+          &#34;p&#34;,
+          &#34;h&#34;,
+          IS_EMBEDDED
+            ? &#34;Added to your chat with the last few seconds of your session. You press send.&#34;
+            : &#34;Saved into the app workspace with the last few seconds of your session.&#34;
+        )
+      );
+      var ta = document.createElement(&#34;textarea&#34;);
+      ta.placeholder = &#34;What went wrong? (optional)&#34;;
+      ta.maxLength = 2000;
+      panel.appendChild(ta);
+      var row = el(&#34;div&#34;, &#34;row&#34;);
+      var cancel = el(&#34;button&#34;, &#34;b cancel&#34;, &#34;Cancel&#34;);
+      cancel.type = &#34;button&#34;;
+      var share = el(&#34;button&#34;, &#34;b share&#34;, IS_EMBEDDED ? &#34;Add to chat&#34; : &#34;Save report&#34;);
+      share.type = &#34;button&#34;;
+      row.appendChild(cancel);
+      row.appendChild(share);
+      panel.appendChild(row);
+      sh.appendChild(panel);
+      fab.classList.add(&#34;open&#34;);
+      ta.focus();
+      ta.addEventListener(
+        &#34;keydown&#34;,
+        safely(function (ev) {
+          if (ev.key === &#34;Escape&#34;) closePanel();
+        })
+      );
+      cancel.addEventListener(&#34;click&#34;, safely(closePanel));
+      share.addEventListener(
+        &#34;click&#34;,
+        safely(function () {
+          var note = ta.value.slice(0, 2000);
+          share.disabled = true;
+          share.textContent = &#34;Capturing…&#34;;
+          dumpReplay(&#34;user-report&#34;, note, currentErrorSummary(), function (file) {
+            var md = file ? String(file).replace(/\.json$/, &#34;.md&#34;) : null;
+            if (IS_EMBEDDED) {
+              try {
+                window.parent.postMessage(
+                  {
+                    source: &#34;preview-logger&#34;,
+                    via: &#34;emergent-overlay&#34;,
+                    type: &#34;userBugReport&#34;,
+                    category: &#34;report&#34;,
+                    severity: &#34;info&#34;,
+                    data: { note: note, replay: file, url: location.pathname },
+                    timestamp: new Date().toISOString(),
+                  },
+                  &#34;*&#34;
+                );
+              } catch (e) {
+                /* parent gone */
+              }
+            }
+            closePanel();
+            if (IS_EMBEDDED) {
+              status(&#34;Added to your chat&#34;, { tip: &#34;Press send in the chat to share it&#34;, ms: 3000 });
+              return;
+            }
+            if (!md) {
+              status(&#34;Could not capture — try again&#34;, { err: true, ms: 3000 });
+              return;
+            }
+            // Same shape as the builder&#39;s prefilled message, so the agent sees one format either way.
+            var noteText = &#34;Bug report from the preview&#34; + (note ? &#39;: &#34;&#39; + note + &#39;&#34;&#39; : &#34;&#34;) + &#34; — session digest at &#34; + md;
+            status(&#34;Saved to your workspace&#34;, {
+              ms: 8000,
+              action: {
+                label: &#34;Copy note&#34;,
+                onClick: function (labelNode) {
+                  copyText(noteText, function (ok) {
+                    labelNode.textContent = ok ? &#34;Copied&#34; : &#34;Copy failed&#34;;
+                    if (resetTimer) clearTimeout(resetTimer);
+                    resetTimer = setTimeout(safely(reset), 1500);
+                  });
+                },
+              },
+            });
+          });
+        })
+      );
+    }
+    fab.addEventListener(
+      &#34;click&#34;,
+      safely(function () {
+        if (bar.classList.contains(&#34;busy&#34;)) {
+          reset();
+          return;
+        }
+        if (panel) closePanel();
+        else openPanel();
+      })
+    );
+    hideBtn.addEventListener(
+      &#34;click&#34;,
+      safely(function (ev) {
+        ev.stopPropagation();
+        closePanel();
+        reset();
+        bar.classList.add(&#34;tucked&#34;);
+        handle.classList.add(&#34;on&#34;);
+        try {
+          sessionStorage.setItem(&#34;__emergent_bug_fab_dismissed__&#34;, &#34;1&#34;);
+        } catch (e) {
+          /* ignore */
+        }
+      })
+    );
+    handle.addEventListener(
+      &#34;click&#34;,
+      safely(function () {
+        bar.classList.remove(&#34;tucked&#34;);
+        handle.classList.remove(&#34;on&#34;);
+        try {
+          sessionStorage.removeItem(&#34;__emergent_bug_fab_dismissed__&#34;);
+        } catch (e) {
+          /* ignore */
+        }
+      })
+    );
+    (document.body || document.documentElement).appendChild(host);
+    fabState = host;
+  }
+
+  function currentErrorSummary() {
+    if (!errors.length) return null;
+    var e = errors[errors.length - 1];
+    return { kind: e.kind, message: String(e.message).slice(0, 300), file: e.file };
+  }
+
+  if (document.readyState === &#34;loading&#34;) {
+    document.addEventListener(&#34;DOMContentLoaded&#34;, safely(startBlackBox));
+  } else {
+    startBlackBox();
+  }
+
+  // ---- runtime errors (React 19 routes uncaught render errors here via reportError)
+  window.addEventListener(
+    &#34;error&#34;,
+    safely(function (ev) {
+      var t = ev.target;
+      if (t &amp;&amp; t !== window &amp;&amp; (t.tagName === &#34;SCRIPT&#34; || (t.tagName === &#34;LINK&#34; &amp;&amp; t.rel === &#34;stylesheet&#34;))) {
+        // capture-layer assets (/_emergent/*, /__emergent_overlay__/*: e.g. the recorder when no edge
+        // handler serves it or a content blocker drops it) must never surface as app errors or trigger the chip
+        var failedUrl = String(t.src || t.href || &#34;&#34;);
+        if (failedUrl.indexOf(&#34;/_emergent/&#34;) !== -1 || failedUrl.indexOf(&#34;/__emergent_overlay__/&#34;) !== -1) return;
+        // The app&#39;s own modules and assets are same-origin under the dev server. A third-party asset that
+        // fails to load (Cloudflare&#39;s injected Insights beacon, PostHog via *.emergent.sh, a CDN font) is
+        // blocked by content blockers, restricted egress or a bot challenge far more often than it is broken,
+        // and a library that really is missing shows up as a runtime error a moment later anyway.
+        if (isCrossOrigin(failedUrl)) {
+          ignored(&#34;cross-origin resource&#34;, failedUrl);
+          return;
+        }
+        addError({
+          kind: &#34;resource&#34;,
+          message: &#34;Failed to load: &#34; + (t.src || t.href || &#34;unknown resource&#34;),
+          file: shortFile(t.src || t.href),
+          stack: &#34;&#34;,
+          frame: &#34;&#34;,
+        });
+        // a dead module script usually means a build error somewhere in its import chain
+        fetchBuildState();
+        return;
+      }
+      if (!ev.message &amp;&amp; !ev.error) return;
+      var fname = ev.filename || &#34;&#34;;
+      var stk = (ev.error &amp;&amp; ev.error.stack) || &#34;&#34;;
+      // opaque cross-origin errors carry nothing actionable and are almost always third-party scripts
+      if (!fname &amp;&amp; !stk &amp;&amp; /^Script error\.?$/.test(String(ev.message || &#34;&#34;))) {
+        ignored(&#34;opaque cross-origin&#34;, ev.message);
+        return;
+      }
+      if (isForeign(fname, stk)) {
+        ignored(&#34;foreign source&#34;, fname || stk.split(&#34;\n&#34;)[1] || ev.message);
+        return;
+      }
+      var runMsg = (ev.error &amp;&amp; ev.error.message) || ev.message || &#34;&#34;;
+      if (isBrowserNoise(runMsg)) {
+        ignored(&#34;browser noise&#34;, runMsg);
+        return;
+      }
+      addError({
+        kind: &#34;runtime&#34;,
+        message: (ev.error &amp;&amp; ev.error.message) || ev.message || &#34;Unknown error&#34;,
+        file: ev.filename
+          ? shortFile(ev.filename) + (ev.lineno ? &#34;:&#34; + ev.lineno + (ev.colno ? &#34;:&#34; + ev.colno : &#34;&#34;) : &#34;&#34;)
+          : &#34;&#34;,
+        stack: (ev.error &amp;&amp; ev.error.stack) || &#34;&#34;,
+        frame: &#34;&#34;,
+      });
+    }),
+    true
+  );
+
+  window.addEventListener(&#34;unhandledrejection&#34;, safely(function (ev) {
+    var r = ev.reason;
+    if (r instanceof Error &amp;&amp; isForeign(&#34;&#34;, r.stack)) {
+      ignored(&#34;foreign rejection&#34;, r.stack.split(&#34;\n&#34;)[1] || r.message);
+      return;
+    }
+    var rejMsg = describe(r) || (r &amp;&amp; r.message) || &#34;&#34;;
+    if (isBrowserNoise(rejMsg)) {
+      ignored(&#34;browser noise&#34;, rejMsg);
+      return;
+    }
+    addError({
+      kind: &#34;rejection&#34;,
+      message: describe(r) || &#34;Unhandled promise rejection&#34;,
+      file: &#34;&#34;,
+      stack: r instanceof Error ? r.stack || &#34;&#34; : &#34;&#34;,
+      frame: &#34;&#34;,
+    });
+  }));
+
+  // ---- build errors
+  function addCompileError(err) {
+    if (!err) return;
+    var loc = err.loc || {};
+    var message = stripAnsi(err.message) || &#34;Build failed&#34;;
+    if (ROOT) message = message.split(ROOT + &#34;/&#34;).join(&#34;&#34;).split(ROOT).join(&#34;&#34;);
+    var full = message;
+    var frame = stripAnsi(err.frame || &#34;&#34;);
+    // oxc/babel embed the code frame in the message; show first line, frame goes below
+    var nl = message.indexOf(&#34;\n&#34;);
+    if (nl !== -1) {
+      if (!frame) frame = message.slice(nl + 1);
+      message = message.slice(0, nl);
+    }
+    addError({
+      kind: &#34;compile&#34;,
+      message: message,
+      fullMessage: full,
+      moduleId: err.id || (loc.file ? String(loc.file) : &#34;&#34;),
+      file: loc.file
+        ? shortFile(loc.file) + (loc.line ? &#34;:&#34; + loc.line + (loc.column ? &#34;:&#34; + loc.column : &#34;&#34;) : &#34;&#34;)
+        : shortFile(err.id),
+      frame: frame,
+      plugin: err.plugin || &#34;&#34;,
+      stack: stripAnsi(err.stack),
+    });
+  }
+
+  // Vite 8 keeps no error buffer for late-connecting clients, so ask the plugin&#39;s
+  // server-side cache; covers fresh page loads that race the HMR socket.
+  function fetchBuildState() {
+    // ?client=1: same JSON, always 200 — our own fetch must never show up as a failed request in the
+    // user&#39;s (or an agent&#39;s) browser tooling; the 200/503 contract is for the platform probe only.
+    fetch(BASE + &#34;__emergent_overlay__/health?client=1&#34;)
+      .then(function (r) {
+        return r.json();
+      })
+      .then(function (d) {
+        if (d &amp;&amp; d.build_errors &amp;&amp; d.build_errors.length) d.build_errors.forEach(addCompileError);
+        else if (d &amp;&amp; d.build_error) addCompileError(d.build_error);
+      })
+      .catch(function () {
+        /* dev server unreachable — nothing to recover */
+      });
+  }
+  sendReport(); // boot beacon: a fresh healthy load supersedes a previous tab&#39;s error report
+
+  // HTTP transport (craco/webpack): reports and dumps map onto the same send() surface as
+  // the hot channel, so every caller stays transport-blind. Compile errors are CRA&#39;s own
+  // overlay&#39;s job here, and sourcemap resolve is vite-only (the 2s fallback keeps raw stacks).
+  if (TRANSPORT === &#34;http&#34;) {
+    hotReady({
+      send: safely(function (event, payload) {
+        var pth = null;
+        if (event === &#34;emergent-overlay:report&#34;) pth = &#34;report&#34;;
+        else if (event === &#34;emergent-overlay:crash-replay&#34;) pth = &#34;crash-replay&#34;;
+        else return;
+        var url = (BASE === &#34;/&#34; ? &#34;&#34; : BASE.replace(/\/$/, &#34;&#34;)) + &#34;/__emergent_overlay__/&#34; + pth;
+        fetch(url, {
+          method: &#34;POST&#34;,
+          headers: { &#34;Content-Type&#34;: &#34;application/json&#34;, &#34;X-Emergent-Overlay-Token&#34;: TOKEN },
+          body: JSON.stringify(payload),
+        })
+          .then(function (r) {
+            if (pth !== &#34;crash-replay&#34;) return;
+            return r.json().then(function (d) {
+              var cb = payload &amp;&amp; payload.id &amp;&amp; pendingReplays[payload.id];
+              if (cb) cb((d &amp;&amp; d.file) || null);
+            });
+          })
+          .catch(function () {
+            /* transport is best-effort */
+          });
+      }),
+    });
+  }
+  // Live errors ride Vite&#39;s own (token-authenticated) HMR socket via its public client API.
+  // /state hydration runs AFTER listener registration so an error arriving in between
+  // is not missed (vite 8 keeps no buffer for late subscribers).
+  if (TRANSPORT !== &#34;http&#34; &amp;&amp; !HMR_ENABLED) fetchBuildState();
+  if (TRANSPORT !== &#34;http&#34; &amp;&amp; HMR_ENABLED) {
+    import(BASE + &#34;@vite/client&#34;)
+      .then(function (m) {
+        var hot = m.createHotContext(&#34;/__emergent_overlay__&#34;);
+        hot.on(&#34;vite:error&#34;, safely(function (payload) {
+          addCompileError(payload &amp;&amp; payload.err);
+        }));
+        hot.on(&#34;emergent-overlay:resolved&#34;, safely(function (d) {
+          var cb = d &amp;&amp; d.id &amp;&amp; pendingResolves[d.id];
+          if (cb) cb(d);
+        }));
+        hot.on(&#34;emergent-overlay:crash-replay-saved&#34;, safely(function (d) {
+          var cb = d &amp;&amp; d.id &amp;&amp; pendingReplays[d.id];
+          if (cb) cb(d.file || null);
+        }));
+        hot.on(&#34;vite:afterUpdate&#34;, safely(function (payload) {
+          // only clear errors belonging to the modules that just updated successfully —
+          // an unrelated file&#39;s HMR update must not hide another module&#39;s build error
+          var paths = [];
+          (((payload &amp;&amp; payload.updates) || [])).forEach(function (u) {
+            if (u.path) paths.push(u.path);
+            if (u.acceptedPath &amp;&amp; u.acceptedPath !== u.path) paths.push(u.acceptedPath);
+          });
+          clearCompileErrors(function (e) {
+            // unidentified errors are kept (full reload revalidates); substring matching
+            // is out: /src/foo.ts must not clear /src/foo.tsx
+            if (!e.moduleId) return false;
+            var id = String(e.moduleId).split(&#34;?&#34;)[0];
+            for (var i = 0; i &lt; paths.length; i++) {
+              var pth = String(paths[i]).split(&#34;?&#34;)[0];
+              if (id === pth || (pth.charAt(0) === &#34;/&#34; &amp;&amp; id.length &gt; pth.length &amp;&amp; id.slice(-pth.length) === pth)) return true;
+            }
+            return false;
+          });
+        }));
+        hotReady(hot);
+        fetchBuildState();
+      })
+      .catch(function () {
+        /* vite client unavailable — the state fetch still covers build errors */
+        fetchBuildState();
+      });
+  }
+
+  // ---- UI (shadow DOM so app styles can&#39;t leak in). Styling mirrors Emergent&#39;s
+  // product language (app.emergent.sh): near-black cards, pill buttons, white-&gt;green
+  // headline gradient, lowercase wordmark. Theme vars flip for light-mode apps.
+  var CSS =
+    &#34;:host{all:initial}&#34; +
+    &#34;.backdrop{--c-card:#0d0d0d;--c-border:#333;--c-divider:#262626;--c-text:#fff;--c-text2:rgba(255,255,255,.55);--c-text3:rgba(255,255,255,.4);--c-inset:#161616;--c-inset-border:#2a2a2a;--c-msg:#f28b8b;--c-accent:#81ff89;--c-grad:linear-gradient(90deg,#fff 0%,#81ff89 100%);--c-btn-bg:#fff;--c-btn-fg:#111;--c-btn-hover:#e2e2e2;--c-ghost-bg:#1a1a1a;--c-ghost-border:#333;--c-ghost-fg:rgba(255,255,255,.7);--c-ghost-hover:#242424;--c-err-bg:rgba(217,69,69,.16);--c-err-fg:#f28b8b;--c-warn-bg:rgba(185,164,82,.18);--c-warn-fg:#d6c17a;--c-neut-bg:#242424;--c-neut-fg:rgba(255,255,255,.55);&#34; +
+    &#34;position:fixed;inset:0;z-index:2147483647;background:rgba(17,17,17,.88);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;padding:24px;font-family:Brockmann,Inter,ui-sans-serif,system-ui,-apple-system,&#39;Segoe UI&#39;,Roboto,sans-serif;color:var(--c-text);overflow:auto}&#34; +
+    &#34;.backdrop.light{--c-card:#fff;--c-border:#e5e5e5;--c-divider:#ececec;--c-text:#111;--c-text2:rgba(0,0,0,.55);--c-text3:rgba(0,0,0,.4);--c-inset:#f6f6f6;--c-inset-border:#e5e5e5;--c-msg:#c92f2f;--c-accent:#0f8b2e;--c-grad:linear-gradient(90deg,#111 0%,#0f8b2e 100%);--c-btn-bg:#111;--c-btn-fg:#fff;--c-btn-hover:#333;--c-ghost-bg:#fff;--c-ghost-border:#d9d9d9;--c-ghost-fg:rgba(0,0,0,.65);--c-ghost-hover:#f2f2f2;--c-err-bg:rgba(217,69,69,.12);--c-err-fg:#b3261e;--c-warn-bg:rgba(122,93,0,.1);--c-warn-fg:#7a5d00;--c-neut-bg:#efefef;--c-neut-fg:rgba(0,0,0,.55);background:rgba(245,245,245,.88)}&#34; +
+    &#34;.card{background:var(--c-card);border:1px solid var(--c-border);border-radius:16px;box-shadow:0 18px 44px rgba(0,0,0,.24);max-width:760px;width:100%;max-height:calc(100vh - 48px);display:flex;flex-direction:column;overflow:hidden}&#34; +
+    &#34;.head{display:flex;align-items:center;gap:10px;padding:14px 18px;border-bottom:1px solid var(--c-divider)}&#34; +
+    &#34;.word{height:15px;width:auto;color:var(--c-text);display:block}&#34; +
+    &#34;.badge{font-size:11px;font-weight:500;padding:3px 10px;border-radius:999px;white-space:nowrap}&#34; +
+    &#34;.badge.err{background:var(--c-err-bg);color:var(--c-err-fg)}&#34; +
+    &#34;.badge.warn{background:var(--c-warn-bg);color:var(--c-warn-fg)}&#34; +
+    &#34;.badge.neutral{background:var(--c-neut-bg);color:var(--c-neut-fg)}&#34; +
+    &#34;.spacer{flex:1}&#34; +
+    &#34;.nav{display:flex;align-items:center;gap:4px;font-size:12px;color:var(--c-text3)}&#34; +
+    &#34;.nav button{background:none;border:1px solid var(--c-ghost-border);color:var(--c-text2);border-radius:999px;width:22px;height:22px;cursor:pointer;font-size:12px;line-height:1}&#34; +
+    &#34;.nav button:hover{background:var(--c-ghost-hover);color:var(--c-text)}&#34; +
+    &#34;.x{background:none;border:none;color:var(--c-text3);font-size:15px;cursor:pointer;padding:3px 7px;border-radius:999px}&#34; +
+    &#34;.x:hover{color:var(--c-text);background:var(--c-ghost-hover)}&#34; +
+    &#34;.body{padding:18px;overflow:auto}&#34; +
+    &#34;.headline{font-size:17px;font-weight:600;letter-spacing:-.01em;background:var(--c-grad);-webkit-background-clip:text;background-clip:text;color:transparent;width:fit-content;margin:0 0 10px}&#34; +
+    &#34;.msg{font-family:&#39;Geist Mono&#39;,&#39;JetBrains Mono&#39;,ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:13px;line-height:1.55;color:var(--c-msg);white-space:pre-wrap;word-break:break-word;margin:0 0 12px}&#34; +
+    &#34;.meta{font-family:&#39;Geist Mono&#39;,&#39;JetBrains Mono&#39;,ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:12px;color:var(--c-accent);margin:0 0 12px;word-break:break-all}&#34; +
+    &#34;.meta .plugin{color:var(--c-text3)}&#34; +
+    &#34;pre.frame{background:var(--c-inset);border:1px solid var(--c-inset-border);border-radius:10px;padding:12px 14px;font-family:&#39;Geist Mono&#39;,&#39;JetBrains Mono&#39;,ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:12px;line-height:1.55;color:var(--c-text2);overflow:auto;max-height:240px;margin:0 0 12px;white-space:pre}&#34; +
+    &#34;details{margin:0 0 4px}&#34; +
+    &#34;summary{cursor:pointer;font-size:12px;color:var(--c-text3);user-select:none}&#34; +
+    &#34;summary:hover{color:var(--c-text)}&#34; +
+    &#34;pre.stack{background:var(--c-inset);border:1px solid var(--c-inset-border);border-radius:10px;padding:12px 14px;font-family:&#39;Geist Mono&#39;,&#39;JetBrains Mono&#39;,ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:11px;line-height:1.55;color:var(--c-text3);overflow:auto;max-height:200px;margin:8px 0 0;white-space:pre}&#34; +
+    &#34;.foot{display:flex;align-items:center;gap:12px;padding:13px 18px;border-top:1px solid var(--c-divider)}&#34; +
+    &#34;.hint{font-size:12px;color:var(--c-text3);flex:1;line-height:1.5}&#34; +
+    &#34;.btn{border-radius:999px;font-size:12.5px;font-weight:500;padding:7px 16px;cursor:pointer;white-space:nowrap}&#34; +
+    &#34;.btn.primary{background:var(--c-btn-bg);border:1px solid var(--c-btn-bg);color:var(--c-btn-fg)}&#34; +
+    &#34;.btn.primary:hover{background:var(--c-btn-hover);border-color:var(--c-btn-hover)}&#34; +
+    &#34;.btn.ghost{background:var(--c-ghost-bg);border:1px solid var(--c-ghost-border);color:var(--c-ghost-fg)}&#34; +
+    &#34;.btn.ghost:hover{background:var(--c-ghost-hover)}&#34;;
+
+  // theme follows the app: html.dark class first, then rendered background luminance,
+  // then light. A 1x1 canvas normalizes any CSS color space (Tailwind v4 emits oklch).
+  function bgLuminance(color) {
+    try {
+      var canvas = document.createElement(&#34;canvas&#34;);
+      canvas.width = canvas.height = 1;
+      var ctx = canvas.getContext(&#34;2d&#34;);
+      ctx.fillStyle = color;
+      ctx.fillRect(0, 0, 1, 1);
+      var d = ctx.getImageData(0, 0, 1, 1).data;
+      if (d[3] &lt; 20) return null;
+      return 0.299 * d[0] + 0.587 * d[1] + 0.114 * d[2];
+    } catch (e) {
+      return null;
+    }
+  }
+  function isDark() {
+    var cl = document.documentElement.classList;
+    if (cl.contains(&#34;dark&#34;)) return true;
+    if (cl.contains(&#34;light&#34;)) return false;
+    try {
+      // apps usually paint their theme on an inner container, not body — sample what&#39;s
+      // actually rendered at the viewport center and walk up to the first opaque bg
+      var el = document.elementFromPoint(window.innerWidth / 2, window.innerHeight / 2);
+      while (el &amp;&amp; el !== document.documentElement) {
+        var lum = bgLuminance(getComputedStyle(el).backgroundColor);
+        if (lum != null) return lum &lt; 128;
+        el = el.parentElement;
+      }
+      var els = [document.body, document.documentElement];
+      for (var i = 0; i &lt; els.length; i++) {
+        if (!els[i]) continue;
+        var lum2 = bgLuminance(getComputedStyle(els[i]).backgroundColor);
+        if (lum2 != null) return lum2 &lt; 128;
+      }
+    } catch (e) {
+      /* fall through */
+    }
+    return false;
+  }
+
+  var WORDMARK =
+    &#39;&lt;svg class=&#34;word&#34; viewBox=&#34;0 0 112 24&#34; xmlns=&#34;http://www.w3.org/2000/svg&#34; fill=&#34;currentColor&#34;&gt;&lt;path d=&#34;M63.1855 18.5146C63.6416 20.2898 65.2526 21.6022 67.1699 21.6025C69.0876 21.6025 70.6992 20.29 71.1553 18.5146H73.6016C73.1083 21.6232 70.4173 23.9999 67.1699 24C63.9227 23.9997 61.2306 21.6231 60.7373 18.5146H63.1855ZM60.6572 17.5615C60.6569 17.5366 60.6553 17.5114 60.6553 17.4863C60.6553 17.4616 60.6569 17.4367 60.6572 17.4121V17.5615ZM59.9707 6.17188L55.1709 8.57129V17.1445H52.7715V4.11719H55.1709V6.17188L59.9707 3.77148V6.17188ZM93.9121 6.17188C94.5323 5.18417 95.7329 4.7998 97.3408 4.7998C99.9593 4.79982 101.797 7.09506 101.797 9.64453V17.1436H99.3682V10.1963C99.3682 8.35869 98.2163 7.2002 96.6543 7.2002C95.0694 7.20025 93.9121 8.45061 93.9121 10.1963V17.1436H91.5117V4.7998H93.9121V6.17188ZM19.1709 6.17188C19.8566 5.1434 21.1585 4.79982 22.5996 4.7998C24.0407 4.7998 25.3426 5.48614 26.0283 6.51465C26.714 5.48614 27.7427 4.7998 29.7998 4.7998C32.7138 4.79994 34.9423 6.6857 34.9424 9.25684V17.1426H32.542V9.94238C32.5419 8.1529 31.3569 7.02848 29.7998 7.02832C28.196 7.02832 27.0567 8.24574 27.0566 9.94238V17.1426H24.6572V9.94238C24.6571 8.15278 23.3227 7.02832 21.7422 7.02832C20.1386 7.02851 19.1709 8.15009 19.1709 9.84668V17.1426H16.7715V4.7998H19.1709V6.17188ZM50.708 9.99512C50.8186 12.6349 49.3889 15.215 46.8623 16.4473C44.3358 17.6793 41.4232 17.2171 39.4111 15.5049L41.9023 14.29C43.0925 14.8701 44.5282 14.9162 45.8105 14.291C47.0928 13.6656 47.941 12.5059 48.2168 11.2109L50.708 9.99512ZM73.6836 10.5908C73.6837 10.6035 73.6846 10.6162 73.6846 10.6289C73.6846 10.6413 73.6837 10.6537 73.6836 10.666V10.9717H73.6748C73.4965 14.4098 70.6525 17.1426 67.1699 17.1426C63.5725 17.1423 60.6562 14.2263 60.6562 10.6289C60.6564 7.03165 63.5726 4.11549 67.1699 4.11523C68.7303 4.11523 70.1623 4.66426 71.2842 5.5791V3.42969H73.6836V10.5908ZM89.4502 9.99512C89.5608 12.6348 88.1309 15.2149 85.6045 16.4473C83.0779 17.6795 80.1645 17.2172 78.1523 15.5049L80.6436 14.29C81.8337 14.8701 83.2695 14.9162 84.5518 14.291C85.834 13.6656 86.6822 12.5059 86.958 11.2109L89.4502 9.99512ZM107.279 3.42773H110.021V5.82812H107.279V14.7422H111.739V17.1426L104.882 17.1416H104.88V5.82812H103.165V3.42773H104.88V0H107.279V3.42773ZM14.708 9.99316C14.8186 12.6329 13.3889 15.213 10.8623 16.4453C8.33582 17.6773 5.42318 17.2151 3.41113 15.5029L5.90234 14.2881C7.09265 14.8682 8.52816 14.9135 9.81055 14.2881C11.093 13.6626 11.9411 12.5031 12.2168 11.208L14.708 9.99316ZM67.1699 6.51367C64.8979 6.51378 63.0558 8.35502 63.0557 10.627C63.0557 12.899 64.8978 14.7411 67.1699 14.7412C69.4421 14.7412 71.2842 12.8991 71.2842 10.627C71.284 8.35496 69.442 6.51367 67.1699 6.51367ZM40.8525 4.12402C44.2554 2.46459 48.3598 3.8776 50.0195 7.28027C50.1209 7.48808 50.2104 7.69881 50.2891 7.91113L38.0273 13.8926C37.9084 13.6998 37.7977 13.4989 37.6963 13.291C36.0366 9.88819 37.4496 5.78369 40.8525 4.12402ZM79.5938 4.12402C82.9966 2.46455 87.101 3.8776 88.7607 7.28027C88.8621 7.48807 88.9516 7.69882 89.0303 7.91113L76.7686 13.8926C76.6496 13.6998 76.5389 13.4989 76.4375 13.291C74.7778 9.88819 76.1908 5.78369 79.5938 4.12402ZM4.85254 4.12207C8.25543 2.46258 12.3598 3.87557 14.0195 7.27832C14.1209 7.48616 14.2104 7.69683 14.2891 7.90918L2.02734 13.8896C1.90847 13.697 1.79765 13.4968 1.69629 13.2891C0.0365657 9.88623 1.4496 5.78174 4.85254 4.12207ZM46.8047 6.94141C45.4952 5.7885 43.5704 5.46869 41.9043 6.28125C40.2383 7.0938 39.3059 8.80725 39.4082 10.5488L46.8047 6.94141ZM85.5459 6.94141C84.2364 5.7885 82.3116 5.46869 80.6455 6.28125C78.9796 7.09382 78.0471 8.80727 78.1494 10.5488L85.5459 6.94141ZM10.8047 6.93945C9.49529 5.78661 7.57029 5.46593 5.9043 6.27832C4.23824 7.09088 3.30586 8.80523 3.4082 10.5469L10.8047 6.93945Z&#34;/&gt;&lt;/svg&gt;&#39;;
+
+  function el(tag, cls, text) {
+    var n = document.createElement(tag);
+    if (cls) n.className = cls;
+    if (text != null) n.textContent = text;
+    return n;
+  }
+
+  function buildUi() {
+    var host = document.createElement(&#34;div&#34;);
+    host.setAttribute(&#34;data-emergent-overlay-host&#34;, &#34;&#34;);
+    var shadow = host.attachShadow({ mode: &#34;open&#34; });
+    var style = document.createElement(&#34;style&#34;);
+    style.textContent = CSS;
+    shadow.appendChild(style);
+
+    var backdrop = el(&#34;div&#34;, &#34;backdrop&#34;);
+    var card = el(&#34;div&#34;, &#34;card&#34;);
+
+    var head = el(&#34;div&#34;, &#34;head&#34;);
+    var markWrap = document.createElement(&#34;span&#34;);
+    markWrap.innerHTML = WORDMARK;
+    head.appendChild(markWrap.firstChild);
+    var badge = el(&#34;span&#34;, &#34;badge&#34;, &#34;&#34;);
+    head.appendChild(badge);
+    head.appendChild(el(&#34;span&#34;, &#34;spacer&#34;));
+    var nav = el(&#34;span&#34;, &#34;nav&#34;);
+    var prev = el(&#34;button&#34;, null, &#34;‹&#34;);
+    var pos = el(&#34;span&#34;, null, &#34;&#34;);
+    var next = el(&#34;button&#34;, null, &#34;›&#34;);
+    nav.appendChild(prev);
+    nav.appendChild(pos);
+    nav.appendChild(next);
+    head.appendChild(nav);
+    var x = el(&#34;button&#34;, &#34;x&#34;, &#34;✕&#34;);
+    head.appendChild(x);
+    card.appendChild(head);
+
+    var body = el(&#34;div&#34;, &#34;body&#34;);
+    var headline = el(&#34;p&#34;, &#34;headline&#34;, &#34;&#34;);
+    var msg = el(&#34;p&#34;, &#34;msg&#34;, &#34;&#34;);
+    var meta = el(&#34;p&#34;, &#34;meta&#34;, &#34;&#34;);
+    var frame = el(&#34;pre&#34;, &#34;frame&#34;);
+    var det = document.createElement(&#34;details&#34;);
+    var sum = el(&#34;summary&#34;, null, &#34;Stack trace&#34;);
+    var stack = el(&#34;pre&#34;, &#34;stack&#34;);
+    det.appendChild(sum);
+    det.appendChild(stack);
+    body.appendChild(headline);
+    body.appendChild(msg);
+    body.appendChild(meta);
+    body.appendChild(frame);
+    body.appendChild(det);
+    card.appendChild(body);
+
+    var foot = el(&#34;div&#34;, &#34;foot&#34;);
+    var hint = el(
+      &#34;span&#34;,
+      &#34;hint&#34;,
+      &#34;This error was captured by Emergent. Full details also remain in the browser console.&#34;
+    );
+    var copy = el(&#34;button&#34;, &#34;btn ghost&#34;, &#34;Copy details&#34;);
+    var reload = el(&#34;button&#34;, &#34;btn primary&#34;, &#34;Reload app&#34;);
+    foot.appendChild(hint);
+    foot.appendChild(copy);
+    foot.appendChild(reload);
+    card.appendChild(foot);
+
+    backdrop.appendChild(card);
+    shadow.appendChild(backdrop);
+
+    prev.addEventListener(&#34;click&#34;, function () {
+      current = (current - 1 + errors.length) % errors.length;
+      render();
+    });
+    next.addEventListener(&#34;click&#34;, function () {
+      current = (current + 1) % errors.length;
+      render();
+    });
+    x.addEventListener(&#34;click&#34;, function () {
+      dismissed = true;
+      render();
+    });
+    reload.addEventListener(&#34;click&#34;, function () {
+      location.reload();
+    });
+    copy.addEventListener(&#34;click&#34;, function () {
+      var text = errors.map(report).join(&#34;\n\n---\n\n&#34;);
+      try {
+        navigator.clipboard.writeText(text).then(
+          function () {
+            copy.textContent = &#34;Copied ✓&#34;;
+            setTimeout(function () {
+              copy.textContent = &#34;Copy details&#34;;
+            }, 1500);
+          },
+          function () {
+            /* permission denied — not an app error */
+          }
+        );
+      } catch (e) {
+        /* clipboard unavailable */
+      }
+    });
+    window.addEventListener(&#34;keydown&#34;, function (ev) {
+      if (ev.key === &#34;Escape&#34; &amp;&amp; !dismissed &amp;&amp; errors.length) {
+        dismissed = true;
+        render();
+      }
+    });
+
+    return {
+      host: host,
+      backdrop: backdrop,
+      badge: badge,
+      nav: nav,
+      pos: pos,
+      headline: headline,
+      msg: msg,
+      meta: meta,
+      frame: frame,
+      det: det,
+      stack: stack,
+    };
+  }
+
+  function report(e) {
+    var k = KINDS[e.kind] || KINDS.runtime;
+    return (
+      &#34;[Emergent preview error] &#34; +
+      k.badge +
+      (e.count &gt; 1 ? &#34; (seen &#34; + e.count + &#34;×)&#34; : &#34;&#34;) +
+      &#34;\nMessage: &#34; +
+      (e.fullMessage || e.message) +
+      (e.file ? &#34;\nFile: &#34; + e.file : &#34;&#34;) +
+      (e.plugin ? &#34;\nPlugin: &#34; + e.plugin : &#34;&#34;) +
+      (e.replayFile
+        ? &#34;\nSession report: &#34; +
+          String(e.replayFile).replace(/\.json$/, &#34;.md&#34;) +
+          &#34; in the workspace (digest; raw events in the matching .json)&#34;
+        : &#34;&#34;) +
+      (e.frame ? &#34;\n\n&#34; + e.frame : &#34;&#34;) +
+      (e.stack ? &#34;\n\nStack:\n&#34; + e.stack : &#34;&#34;)
+    );
+  }
+
+  function render() {
+    // browser-probe surface: window global mirrors what the overlay is showing
+    window.__EMERGENT_OVERLAY_STATE__ = {
+      visible: !dismissed &amp;&amp; errors.length &gt; 0,
+      errors: errors.map(function (e) {
+        return { kind: e.kind, message: e.message, file: e.file, count: e.count };
+      }),
+      get splash() {
+        return splashVisible();
+      },
+    };
+    if (!document.body) {
+      document.addEventListener(&#34;DOMContentLoaded&#34;, render);
+      return;
+    }
+    if (!ui) ui = buildUi();
+    if (!ui.host.isConnected) document.body.appendChild(ui.host);
+
+    if (dismissed || !errors.length) {
+      ui.host.style.display = &#34;none&#34;;
+      return;
+    }
+    // hide the overlay while sampling so elementFromPoint sees the app, not us
+    ui.host.style.display = &#34;none&#34;;
+    var dark = isDark();
+    ui.host.style.display = &#34;&#34;;
+    ui.backdrop.className = &#34;backdrop&#34; + (dark ? &#34;&#34; : &#34; light&#34;);
+
+    var e = errors[current];
+    var k = KINDS[e.kind] || KINDS.runtime;
+    ui.badge.className = &#34;badge &#34; + (k.tone || &#34;neutral&#34;);
+    ui.badge.textContent = k.badge + (e.count &gt; 1 ? &#34; · &#34; + e.count + &#34;×&#34; : &#34;&#34;);
+    ui.headline.textContent = k.headline;
+    ui.msg.textContent = e.message;
+
+    var metaText = e.file || &#34;&#34;;
+    ui.meta.textContent = metaText;
+    if (e.plugin) {
+      var pl = el(&#34;span&#34;, &#34;plugin&#34;, (metaText ? &#34;  ·  &#34; : &#34;&#34;) + &#34;plugin: &#34; + e.plugin);
+      ui.meta.appendChild(pl);
+    }
+    ui.meta.style.display = metaText || e.plugin ? &#34;&#34; : &#34;none&#34;;
+
+    ui.frame.textContent = e.frame || &#34;&#34;;
+    ui.frame.style.display = e.frame ? &#34;&#34; : &#34;none&#34;;
+
+    ui.stack.textContent = e.stack || &#34;&#34;;
+    ui.det.style.display = e.stack ? &#34;&#34; : &#34;none&#34;;
+
+    ui.nav.style.display = errors.length &gt; 1 ? &#34;&#34; : &#34;none&#34;;
+    ui.pos.textContent = current + 1 + &#34; / &#34; + errors.length;
+  }
+})();
+    </script>
+    <script defer="" src="/__emergent_overlay__/recorder.js" data-emergent-rrweb="1">
+    </script>
+  </head>
+  <body>
+    <div id="root">
+    </div>
+    <script type="module" src="/src/main.tsx?t=1789138853229">
+    </script>
+    <script>
+      (function(){function c(){var b=a.contentDocument||(a.contentWindow&amp;&amp;a.contentWindow.document);if(b){var d=b.createElement(&#39;script&#39;);d.innerHTML=&#34;window.__CF$cv$params={r:&#39;a397f45adedfdc64&#39;,t:&#39;MTc4OTE0MzE1MQ==&#39;};var a=document.createElement(&#39;script&#39;);a.src=&#39;/cdn-cgi/challenge-platform/scripts/jsd/main.js&#39;;document.getElementsByTagName(&#39;head&#39;)[0].appendChild(a);&#34;;b.getElementsByTagName(&#39;head&#39;)[0].appendChild(d)}}if(document.body){var a=document.createElement(&#39;iframe&#39;);a.height=1;a.width=1;a.style.position=&#39;absolute&#39;;a.style.top=0;a.style.left=0;a.style.border=&#39;none&#39;;a.style.visibility=&#39;hidden&#39;;document.body.appendChild(a);if(&#39;loading&#39;!==document.readyState)c();else if(window.addEventListener)document.addEventListener(&#39;DOMContentLoaded&#39;,c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);&#39;loading&#39;!==document.readyState&amp;&amp;(document.onreadystatechange=e,c())}}}})();
+    </script>
+    <script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/v31edd6df95cf4e85bb4c19e7a9bdbcba1788362987495" integrity="sha512-iIg7k2xntmwu6/uSb5tpc/hySgZc4eoL31yB29W6tJFo2akwjPWcEqnCEdJvGexCL0KEQwVYv5BlowfhVz26hg==" data-cf-beacon="{&#34;version&#34;:&#34;2024.11.0&#34;,&#34;token&#34;:&#34;7f7b0fd8732c4326aae4b9d58d5c514a&#34;,&#34;spa&#34;:2}" crossorigin="anonymous">
+    </script>
+  </body>
+</html>
